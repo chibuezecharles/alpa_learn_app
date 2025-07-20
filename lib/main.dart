@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
-import 'routes.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'routes/routes.dart';
+import 'bindings/auth_binding.dart';
 
-void main() {
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await GetStorage.init(); 
   runApp(const AlphaLearnApp());
 }
 
@@ -10,15 +16,16 @@ class AlphaLearnApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Alpha Learn',
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
+      title: 'Alpha Learn',
+      initialBinding: AuthBinding(),
+      initialRoute: AppRoutes.splash,
+      getPages: AppRoutes.routes,
       theme: ThemeData(
         fontFamily: 'Montserrat',
         primarySwatch: Colors.green,
       ),
-      initialRoute: '/',
-      routes: routes,
     );
   }
 }

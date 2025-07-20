@@ -1,32 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Profile Screen',
-      debugShowCheckedModeBanner: false,
-      home: const ProfileScreen(),
-    );
-  }
-}
+import '../../controllers/auth_controller.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final authController = Get.find<AuthController>();
+
     return Scaffold(
       backgroundColor: Colors.white,
-
-      /// App Bar
       appBar: AppBar(
         title: const Text("Personal Profile"),
         centerTitle: true,
@@ -34,14 +19,11 @@ class ProfileScreen extends StatelessWidget {
         foregroundColor: Colors.white,
         elevation: 2,
       ),
-
       body: Center(
         child: SingleChildScrollView(
           child: Column(
             children: [
               const SizedBox(height: 40),
-
-              /// Profile Picture
               Stack(
                 alignment: Alignment.center,
                 children: [
@@ -60,35 +42,28 @@ class ProfileScreen extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 20),
-
-              /// User Info
-              const Padding(
+              Padding(
                 padding: EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    InfoRow(label: "Username", value: "chillycee"),
-                    InfoRow(label: "Name", value: "Chuma Chibueze Charles"),
-                    InfoRow(label: "Email", value: "chibueze2805@gmail.com"),
-                    SizedBox(height: 10),
-                    Text(
-                      "Bio:",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Text(
-                      "Flutter developer with a passion for building clean and responsive UIs. Always learning and creating.",
-                      style: TextStyle(fontSize: 15),
-                    ),
-                  ],
-                ),
+                child: Obx(() => Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        InfoRow(label: "Username", value: authController.userUsername.value),
+                        InfoRow(label: "Name", value: authController.userName.value),
+                        InfoRow(label: "Email", value: authController.userEmail.value),
+                        SizedBox(height: 10),
+                        Text(
+                          "Bio:",
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          "Flutter developer with a passion for building clean and responsive UIs. Always learning and creating.",
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      ],
+                    )),
               ),
               const SizedBox(height: 30),
-
-              /// Social Icons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -107,7 +82,6 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-/// Custom Info Row Widget
 class InfoRow extends StatelessWidget {
   final String label;
   final String value;
@@ -137,7 +111,6 @@ class InfoRow extends StatelessWidget {
   }
 }
 
-/// Custom Social Icon Button
 class SocialIcon extends StatelessWidget {
   final IconData icon;
 

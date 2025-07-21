@@ -3,13 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../routes/routes.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    Timer(const Duration(seconds: 3), () {
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
       Get.offNamed(AppRoutes.welcome);
     });
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
@@ -24,3 +33,4 @@ class SplashScreen extends StatelessWidget {
     );
   }
 }
+

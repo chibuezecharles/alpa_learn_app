@@ -1,3 +1,4 @@
+// lib/views/auth/sign_up_screen.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
@@ -5,7 +6,15 @@ import '../../widgets/custom_button.dart';
 import '../../widgets/custom_text_field.dart';
 
 class SignUpScreen extends StatelessWidget {
-  final AuthController authController = Get.find<AuthController>();
+  final authController = Get.find<AuthController>();
+
+  final _formKey = GlobalKey<FormState>();
+  final nameController = TextEditingController();
+  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+
+  SignUpScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,35 +23,31 @@ class SignUpScreen extends StatelessWidget {
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 20),
           child: Form(
-            key: authController.signupFormKey,
+            key: _formKey,
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Image.asset('assets/images/logo.jpg', height: 60),
                 const SizedBox(height: 20),
-                const Text(
-                  "Create your account",
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
+                const Text("Create your account", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 30),
 
                 CustomTextField(
                   label: "Full Name",
-                  controller: authController.nameController,
+                  controller: nameController,
                   validator: (value) => value!.isEmpty ? "Enter name" : null,
                 ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   label: "Username",
-                  controller: authController.usernameController,
+                  controller: usernameController,
                   validator: (value) => value!.isEmpty ? "Enter username" : null,
                 ),
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   label: "Email",
-                  controller: authController.emailController,
+                  controller: emailController,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) => !value!.contains('@') ? "Invalid email" : null,
                 ),
@@ -50,29 +55,37 @@ class SignUpScreen extends StatelessWidget {
 
                 Obx(() => CustomTextField(
                       label: "Password",
-                      controller: authController.passwordController,
+                      controller: passwordController,
                       obscureText: !authController.passwordVisible.value,
                       suffixIcon: IconButton(
                         icon: Icon(authController.passwordVisible.value
                             ? Icons.visibility
                             : Icons.visibility_off),
-                        onPressed: () => authController.togglePasswordVisibility(),
+                        onPressed: authController.togglePasswordVisibility,
                       ),
-                      validator: (value) =>
-                          value!.length < 8 ? "Min. 8 characters" : null,
+                      validator: (value) => value!.length < 8 ? "Min. 8 characters" : null,
                     )),
+
                 const SizedBox(height: 30),
 
                 Obx(() => CustomButton(
                       text: "Create Account",
                       isLoading: authController.isLoading.value,
-                      onPressed: () => authController.signUp(),
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          authController.signUp(
+                            nameController.text.trim(),
+                            usernameController.text.trim(),
+                            emailController.text.trim(),
+                            passwordController.text.trim(),
+                          );
+                        }
+                      },
                     )),
 
                 const SizedBox(height: 20),
                 const Text("or sign up with"),
                 const SizedBox(height: 10),
-
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [
@@ -81,9 +94,7 @@ class SignUpScreen extends StatelessWidget {
                     Icon(Icons.g_mobiledata, size: 32),
                   ],
                 ),
-
                 const SizedBox(height: 20),
-
                 TextButton(
                   onPressed: () => Get.toNamed('/signin'),
                   child: const Text("Already have an account? Sign in"),
